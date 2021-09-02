@@ -10,12 +10,32 @@
 
 >Temos diversas utilidades práticas para as palavras-chaves de um texto, mas no mundo real nem sempre encontramos os textos e suas palavras-chaves.Muitas vezes o texto não vem com as palavras-chaves (pode ser que o autor não precise delas), às vezes os textos vêm com palavras-chaves que não condizem com o seu conteúdo (pode ser que o autor queira que seu texto apareça com mais frequência em um buscador).
 
->Inspirados em Big data, é sobre esse contexto de aplicação, criamos um algoritmo em Python para buscar palavras chaves em um dicionário de dados e nos retornar na forma de imagem. 
+>Inspirados em Big data, é sobre esse contexto de aplicação, criamos um algoritmo em Python para buscar palavras chaves em um dicionário de dados e nos retornar na forma de imagem.
 
-## Code Samples
+## Quick start
 
-> 
+Para executar o projeto basta rodar o seguinte comando com Python:
 
-## Installation
+> Instalando dependencias
 
-> 
+`sh  pip3 --disable-pip-version-check --no-cache-dir install -r requirements.txt`
+
+> Executando projeto
+
+`sh python main.py`
+
+Caso prefira preparamos um ambiente isolado com docker, basta executar os seguintes comando para preparar o ambiente:
+
+> Construindo imagem
+
+`sh docker image build -t project .`
+
+> Iniciando ambiente
+
+`sh docker container run --rm -it project /bin/bash`
+
+> Executando projeto
+
+`sh python main.py`
+
+>
