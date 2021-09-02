@@ -1,0 +1,5 @@
+profanity-check 
+matplotlib
+nltk
+alt-profanity-check
+wordcloud
