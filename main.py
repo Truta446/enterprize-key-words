@@ -1,3 +1,4 @@
+from typing import List
 import matplotlib.pyplot as plt
 import nltk
 import re
@@ -5,6 +6,8 @@ from collections import Counter
 from nltk.corpus import stopwords
 from profanity_check import predict
 from wordcloud import WordCloud
+from string import digits
+from prettytable import PrettyTable
 
 def generate_cloud_words(text: str, qty_key_words: int) -> None:
   nltk.download('stopwords')
@@ -13,10 +16,11 @@ def generate_cloud_words(text: str, qty_key_words: int) -> None:
 
   stopwordsNltk = stopwords.words('portuguese')
 
+
   words = []
 
   for word in text:
-    if word not in stopwordsNltk and word != '' and predict([word]) != 1:
+    if word not in stopwordsNltk and word != '' and len(word) >= 3 and predict([word]) != 1:
       words.append(word)
 
   count = Counter(words)
@@ -34,7 +38,17 @@ def generate_cloud_words(text: str, qty_key_words: int) -> None:
   plt.margins(x=0, y=0)
   wordCloud.to_file("cloud.png")
 
-  print(f'\nPalavras capturadas: {most_common}')
+  display(most_common)
+
+def display(most_common: List) -> None:
+  print(f'\nPalavras capturadas:\n')
+
+  t = PrettyTable(['Palavra', 'Frequência'])
+
+  for data in most_common:
+    t.add_row([data[0], data[1]])
+
+  print(t)
 
 def main() -> None:
   qty_key_words = int(input('Quantas palavras chave deseja obter: '))
@@ -44,10 +58,13 @@ def main() -> None:
 
   text = text.lower()
 
-  trash = ['.', ',', ';', ':', '?', '!', '\'', '"', '“', '”', '(', ')', '@', '#', '%', '¨', '&', '*', '/', '\\', '-', '+', '\n']
+  trash = ['.', ',', ';', ':', '?', '!', '\'', '"', '“', '”', '(', ')', '}', '{', '[', ']', '@', '#', '%', '¨', '&', '*', '/', '\\', '-', '+', '\n']
 
   for t in trash:
     text = text.replace(t, " ")
+
+  remove_digits = str.maketrans('', '', digits)
+  text = text.translate(remove_digits)
 
   words = str(len(text.split()))
   letters = str(len(text))

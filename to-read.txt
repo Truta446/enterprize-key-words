@@ -1,13 +1,80 @@
-A maçã é o fruto da macieira, árvore da família Rosaceae, com tronco de casca parda, lisa e copa arredondada que chega a 10 m de altura. A fruta mais cultivada do mundo é originária da Ásia e da Europa. Existem mais de 2,5 mil espécies de maçã. As variedades mais cultivadas são: gala, golden delicious e fuji. É considerada a “rainha das frutas européias”.
+Entendendo como funciona a Decision Tree
 
-O período de safra é de janeiro a abril. Seu cultivo exige clima temperado.
+Entropia
 
-O consumo de uma maçã por dia previne e mantém a taxa de colesterol. É eficaz para o emagrecimento, devido à presença de pectina, que atua dificultando a absorção das gorduras e da glicose.
+Para montar uma Decision Tree é necessário saber quais valores separam melhor os dados, e a entropia é utilizada para calcular a incerteza dos dados, então este valor representa a quantidade das amostras das várias classes.
 
-A maçã é rica em fibras, vitaminas B1, B2 e sais minerais (fósforo e ferro). Auxilia o bom funcionamento intestinal, contém propriedades antiinflamatórias, antibacterianas e antivirais. Combate os radicais livres por conter flavanóides, prevenindo assim o envelhecimento precoce. Colabora com a higiene bucal, limpando os dentes e fortalecendo as gengivas.
+Quando mais próximo for o valor de zero, menor será a variação das classes, portanto teremos mais amostras da mesma classe, e o contrário indica que os dados possuem amostras de várias classes.
 
-Ao comprá-la, observe o aspecto da casca, se a polpa está firme e sem rachaduras.
+A entropia dos dados é calculada com a Equação 1:
 
-De sabor suave e fácil digestão, a maçã pode ser consumida de várias formas, in natura, crua, cozida, assada, sob a forma de doces, geléias, compotas, no preparo de bolos, tortas e crepes. A casca pode ser aproveitada para o preparo de chá, servindo como diurético. Quando fermentada, a maçã é utilizada também na elaboração de algumas bebidas alcoólicas.
+Equação 1: Equação da Entropia.
 
-O Brasil tornou-se um grande produtor de maçãs desde a metade dos anos 70, sendo os principais estados responsáveis por grande quantidade da produção: Santa Catarina, Rio Grande do Sul, São Paulo e Paraná.
+Cada p representa a probabilidade de uma amostra ser de uma determinada classe.
+
+No primeiro Nó da árvore temos a entropia com valor 1.585, e isso representa uma entropia alta, porque neste momento temos amostra de dados das três classes de Iris.
+
+Figura 8: Primeiro nó da Decision Tree treinada com o dataset de flores Iris.
+
+Para calcular a entropia, primeiro calculamos a probabilidade de cada classe. Dado que temos 150 amostras e se você olhar o dataset conseguirá identificar que há 50 amostras de cada classe, as probabilidades desse dataset serão iguais para todos três tipos de Iris:
+
+Depois calculamos o valor da entropia:
+
+A identificação da condição que separa os dados varia de acordo com a implementação da árvore, mas uma forma básica de obter essa condição é por meio de uma função que testa para cada característica, se essa característica possui um valor que melhor consegue separar os exemplos.
+
+Na primeira folha da árvore (que podemos chegar a partir do nó inicial) temos a entropia de 0.0, que representa uma entropia baixa, porque neste momento temos amostra de apenas uma classe. Então podemos dizer que a condição obtída no primeiro nó é muito boa, porque conseguiu isolar completamente um tipo de Iris com base em um valor da característica SepalLength.
+
+Figura 9: Primeiro nó da Decision Tree treinada com o dataset de flores Iris.
+
+Se calcularmos a probabilidade de cada classe, dado que temos apenas 50 amostras e todas são da classe Iris Setosa, as probabilidades são:
+
+Depois calculamos o valor da entropia:
+
+No segundo Nó da árvore temos a entropia de 1.0, que representa uma entropia alta, porque neste momento ainda temos amostra de duas classes.
+
+Figura 10: Primeiro nó da Decision Tree treinada com o dataset de flores Iris.
+
+Calculamos a probabilidade de cada classe. Dado que temos 100 amostras e 50 são da classe Iris Versicolor e 50 são da classe Iris Virginica, as probabilidades são:
+
+Depois calculamos o valor da entropia:
+
+E assim por diante, até chegar no nível de profundidade máxima da árvore. Mas qual é o nível de profundidade máxima da árvore?
+
+Quando treinamos uma Decision Tree, precisamos definir um valor de k que representa a profundidade máxima da árvore, para a identificação desse valor é feita a partir de experimentações do treino com base no dataset, não tem um valor que é bom para treinar qualquer Decision Tree independente do dataset. Se for um valor muito baixo pode não separar bem todas as classes, e se for um valor muito alto pode classificar muito bem o dataset de treino, mas que ao receber valores um pouco diferentes já não conseguirá mais acertar a classificação (isso é chamado de overfitting).
+
+Implementando o calculo da entropia
+
+Se você não está familiarizado com equações matemáticas, como da entropia:
+
+Pode ter pensado, não preciso saber implementar isso, por que hoje em dia já tem disponível em algum lugar já implementado, mas só para mostrar que a equação não é nenhum bixo de sete cabeças, a sua implementação em Java e Python é assim:
+
+Java:
+public double entropia(double ... probabilidades) {
+    return Arrays.stream(probabilidades)
+            .map(p -> (p > 0.0) ? (-p * (Math.log(p) / Math.log(2.0))) : 0.0)
+            .sum();
+}
+
+Python:
+def entropia(probabilidades):
+    return sum(-p * math.log(p, 2) for p in probabilidades if p)
+
+Você tem uma somatoria da negação de cada probabilidade multiplicado pelo log dessa probabilidade.
+
+Então com base no dataset você pode contar quantos exemplos possui representando cada classe e calcular a probabilidade que será passada para o cálculo da entropia:
+
+Java:
+double p1 = 50.0 / 150.0;
+double p2 = 50.0 / 150.0;
+double p3 = 50.0 / 150.0;
+System.out.println(entropia(p1, p2, p3));
+
+Python:
+p1 = 50.0/150.0
+p2 = 50.0/150.0
+p3 = 50.0/150.0
+print(entropia([p1, p2, p3]))
+
+Saída: 1.584962500721156
+
+Mas continuando, vamos ver como usar uma biblioteca que já possui a Decision Tree implementada.

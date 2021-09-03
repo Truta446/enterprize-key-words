@@ -3,3 +3,4 @@ matplotlib
 nltk
 alt-profanity-check
 wordcloud
+prettytable
